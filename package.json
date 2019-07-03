@@ -1,0 +1,19 @@
+{
+    "name": "zhihu-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon index.js"
+    },
+    "author": "gzf",
+    "license": "ISC",
+    "dependencies": {
+        "install": "^0.12.2",
+        "koa": "^2.7.0",
+        "koa-router": "^7.4.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.1"
+    }
+}
