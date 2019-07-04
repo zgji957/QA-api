@@ -1,13 +1,33 @@
-var Koa = require('koa');
+const Koa = require('koa');
+const Router = require('koa-router');
+const bodyparser = require('koa-bodyparser');
 
-var app = new Koa();
+const app = new Koa();
+const router = new Router();
+const userRouter = new Router({prefix:'/users'})
 
-app.use((ctx,next)=>{
-    ctx.body='test2'
+router.get('/',(ctx)=>{
+    ctx.body='首页';
 })
 
-app.use(()=>{
-    console.log('next')
+userRouter.get('/',(ctx)=>{
+    // ctx.set('Allow','GET, POST')
+    ctx.body='获取用户列表';
 })
 
-app.listen(8082)
+userRouter.post('/',(ctx)=>{
+    ctx.body={
+        name:'gzf' 
+    };
+})
+
+userRouter.get('/:id',(ctx)=>{
+     ctx.body=`获取用户${ctx.params.id}`
+})
+
+app.use(bodyparser())
+app.use(router.routes())
+app.use(userRouter.routes())
+app.use(userRouter.allowedMethods())
+
+app.listen(8080)
