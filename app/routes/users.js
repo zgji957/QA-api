@@ -1,20 +1,16 @@
 const Router = require('koa-router');
+const {find,findById,create,update,delete:del} = require('../controllers/users');
 
-const router = new Router({prefix:'/users'})
+const router = new Router({prefix:'/users'});
 
-router.get('/',(ctx)=>{
-    // ctx.set('Allow','GET, POST')
-    ctx.body='获取用户列表';
-})
+router.get('/',find)
 
-router.post('/',(ctx)=>{
-    ctx.body={
-        name:'gzf' 
-    };
-})
+router.post('/',create)
 
-router.get('/:id',(ctx)=>{
-     ctx.body=`获取用户${ctx.params.id}`
-})
+router.get('/:id',findById)
+
+router.put('/update',update)
+
+router.delete('/delete',del)
 
 module.exports = router;
