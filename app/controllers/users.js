@@ -7,6 +7,7 @@ class UsersCtl {
         ctx.body='获取用户';
     }
     create(ctx){
+        
         ctx.body='创建用户';
     }
     update(ctx){
