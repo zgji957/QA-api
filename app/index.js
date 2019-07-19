@@ -9,7 +9,7 @@ const { connectionStr } = require('./config');
 const app = new Koa();
 
 mongoose.connect(connectionStr,{ useNewUrlParser: true },()=>{console.log('connect success')});
-mongoose.connection.on('error',console.error);
+mongoose.connection.on('error',(error)=>{console.log(error)});
 
 app.use(error({
     postFormat:(e,{stack,...rest})=>{

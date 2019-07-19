@@ -9,8 +9,8 @@ router.post('/',create)
 
 router.get('/:id',findById)
 
-router.put('/update',update)
+router.put('/:id',update)
 
-router.delete('/delete',del)
+router.delete('/:id',del)
 
 module.exports = router;

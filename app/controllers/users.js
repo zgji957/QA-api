@@ -6,27 +6,36 @@ class UsersCtl {
     }
     async findById(ctx){
         const user = await User.findById(ctx.params.id)
-        console.log('use111r',ctx.params.id)
         if(!user){
             ctx.throw(404,"用户不存在")
         }
         ctx.body=user;
-         
     }
-    create(ctx){
+    async create(ctx){
         ctx.verifyParams({
             name:{
-                require:true,
-                
+                type:'string',
+                required:true,
             }
         })
-        ctx.body='创建用户'; 
+        const user = await new User(ctx.request.body).save();
+        if(!user){ctx.throw(404,'用户不存在')}
+        ctx.body=user; 
     }
-    update(ctx){
-        ctx.body='更新用户';
+    async update(ctx){
+        ctx.verifyParams({
+            name:{
+                type:'string',
+                required:true,
+            }
+        })
+        const updateUser = await User.findByIdAndUpdate(ctx.params.id,ctx.request.body)
+        ctx.body = updateUser;
     }
-    delete(ctx){ 
-        ctx.body='删除用户';
+    async delete(ctx){ 
+        const removeUser = await User.findByIdAndRemove(ctx.params.id);
+        if(!removeUser){ctx.throw(404,'用户不存在')}
+        ctx.status = 204;
     }
 }
 
