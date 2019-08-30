@@ -22,8 +22,10 @@ class UsersCtl {
                 required:true,
             }
         })
+        const {name} = ctx.request.body;
+        const repeatUser = await User.findOne({name});
+        if(repeatUser){ctx.throw(409,'用户已注册')}
         const user = await new User(ctx.request.body).save();
-        if(!user){ctx.throw(404,'用户不存在')}
         ctx.body=user; 
     }
     async update(ctx){
