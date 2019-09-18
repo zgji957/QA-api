@@ -6,7 +6,9 @@ class UsersCtl {
         ctx.body = await User.find()
     }
     async findById(ctx){
-        const user = await User.findById(ctx.params.id)
+        const {fields} = ctx.query;
+        const selectFields = fields.split(';').filter(f=>f).map(i=>' +'+i).join('');
+        const user = await User.findById(ctx.params.id).select(selectFields);
         if(!user){
             ctx.throw(404,"用户不存在")
         }
@@ -37,6 +39,37 @@ class UsersCtl {
             },
             password:{
                 type:'string',
+                required:false,
+            },
+            avatar_url:{
+                type:'string',
+                required:false,
+            },
+            gender:{
+                type:'string',
+                required:false,
+            },
+            headline:{
+                type:'string',
+                required:false,
+            },
+            locations:{
+                type:'array',
+                itemType:'string',
+                required:false,
+            },
+            business:{
+                type:'string',
+                required:false,
+            },
+            employments:{
+                type:'array',
+                itemType:'object',
+                required:false,
+            },
+            education:{
+                type:'array',
+                itemType:'object',
                 required:false,
             }
         })
@@ -74,6 +107,9 @@ class UsersCtl {
             ctx.throw(403,'没有权限')
         }
         await next();
+    }
+    async listFollowing(ctx){
+        
     }
 }
 
