@@ -108,8 +108,36 @@ class UsersCtl {
         }
         await next();
     }
+    async checkUserExist(ctx,next){
+        const user = await User.findById(ctx.param.id);
+        if(!user){ctx.throw(404,'用户不存在')}
+        await next();
+    }
     async listFollowing(ctx){
-        
+        const user = await User.findById(ctx.params.id).select('+following').populate('following');
+        if(!user){ctx.throw(404,'用户不存在')}
+        ctx.body = user.following;
+    }
+    async follow(ctx){
+        const me = await User.findById(ctx.state.user._id).select('+following');
+        if(!me.following.map(i =>i.toString()).includes(ctx.params.id)){
+            me.following.push(ctx.params.id);
+            me.save();
+        }
+        ctx.status = 204;
+    }
+    async unfollow(ctx){
+        const me = await User.findById(ctx.state.user._id).select('+following');
+        const index = me.following.map(i=>i.toString()).indexOf(ctx.params.id);
+        if(index>-1){
+            me.following.splice(index,1);
+            me.save();
+        }
+        ctx.status = 204;
+    }
+    async listFollowers(ctx){
+        const user = await User.find({following:ctx.params.id});
+        ctx.body = user;
     }
 }
 
