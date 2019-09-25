@@ -13,7 +13,17 @@ class UsersCtl {
     async findById(ctx){
         const {fields=''} = ctx.query;
         const selectFields = fields.split(';').filter(f=>f).map(i=>' +'+i).join('');
-        const user = await User.findById(ctx.params.id).select(selectFields);
+        const populateStr = fields.split(';').filter(f=>f).map(i=>{
+            if(i==='employments'){
+                return 'employments.company employments.job';
+            }else if(i==='educations'){
+                return 'educations.school education.major';
+            }
+            return i;
+        })
+        const user = await User.findById(ctx.params.id)
+                    .select(selectFields)
+                    .populate(populateStr);
         if(!user){
             ctx.throw(404,"用户不存在")
         }
@@ -123,6 +133,10 @@ class UsersCtl {
         if(!user){ctx.throw(404,'用户不存在')}
         ctx.body = user.following;
     }
+    async listFollowers(ctx){
+        const user = await User.find({following:ctx.params.id});
+        ctx.body = user;
+    }
     async follow(ctx){
         const me = await User.findById(ctx.state.user._id).select('+following');
         if(!me.following.map(i =>i.toString()).includes(ctx.params.id)){
@@ -140,9 +154,27 @@ class UsersCtl {
         }
         ctx.status = 204;
     }
-    async listFollowers(ctx){
-        const user = await User.find({following:ctx.params.id});
-        ctx.body = user;
+    async listFollowingTopics(ctx){
+        const user = await User.findById(ctx.params.id).select('+followingTopics').populate('followingTopics');
+        if(!user){ctx.throw(404,'话题不存在')}
+        ctx.body = user.followingTopics;
+    }
+    async followTopic(ctx){
+        const me = await User.findById(ctx.state.user._id).select('+followingTopics');
+        if(!me.followingTopics.map(i =>i.toString()).includes(ctx.params.id)){
+            me.followingTopics.push(ctx.params.id);
+            me.save();
+        }
+        ctx.status = 204;
+    }
+    async unfollowTopic(ctx){
+        const me = await User.findById(ctx.state.user._id).select('+following');
+        const index = me.followingTopics.map(i=>i.toString()).indexOf(ctx.params.id);
+        if(index>-1){
+            me.followingTopics.splice(index,1);
+            me.save();
+        }
+        ctx.status = 204;
     }
 }
 

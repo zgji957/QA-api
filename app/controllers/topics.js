@@ -56,6 +56,11 @@ class TopicsCtl {
         if(!topicUser){ctx.throw(404,'话题不存在')}
         ctx.status = 204;
     }
+    async checkTopicExist(ctx,next){
+        const topic = await Topic.findById(ctx.param.id);
+        if(!topic){ctx.throw(404,'话题不存在')}
+        await next();
+    }
 }
 
 module.exports = new TopicsCtl();

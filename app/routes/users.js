@@ -1,5 +1,6 @@
 const Router = require('koa-router');
-const {find,findById,create,update,delete:del,login,checkOwner,checkUserExist,listFollowing,follow,unfollow,listFollowers} = require('../controllers/users');
+const {find,findById,create,update,delete:del,login,checkOwner,checkUserExist,listFollowingTopics,listFollowing,listFollowers,follow,unfollow,followTopic,unfollowTopic} = require('../controllers/users');
+const {checkTopicExist} = require('../controllers/topics');
 const { secret } = require('../config');
 const jsonwebtoken = require('jsonwebtoken'); 
 const jwt = require('koa-jwt');
@@ -36,10 +37,16 @@ router.post('/login',login)
 
 router.get('/getFollowing/:id',listFollowing)
 
+router.get('/getFollowers/:id',listFollowers)
+
 router.put('/following/:id',auth,checkUserExist,follow)
 
 router.put('/unfollowing/:id',auth,checkUserExist,unfollow)
 
-router.get('/getFollowers/:id',listFollowers)
+router.get('/getFollowingTopics/:id',listFollowingTopics)
+
+router.put('/followingTopics/:id',auth,checkTopicExist,followTopic)
+
+router.put('/unfollowingTopics/:id',auth,checkTopicExist,unfollowTopic)
 
 module.exports = router;
