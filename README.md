@@ -1,4 +1,4 @@
-# blog-api
+# QA-api
 
 koa2+mongoose实现简易纯后端问答RESTful API接口  
   
