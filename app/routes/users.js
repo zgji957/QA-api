@@ -1,5 +1,10 @@
 const Router = require('koa-router');
-const {find,findById,create,update,delete:del,login,checkOwner,checkUserExist,listFollowingTopics,listFollowing,listFollowers,follow,unfollow,followTopic,unfollowTopic} = require('../controllers/users');
+const {find,findById,create,update,delete:del,
+    login,checkOwner,checkUserExist,listFollowingTopics,
+    listFollowing,listFollowers,follow,unfollow,followTopic,
+    unfollowTopic,listQuestions,listLikingAnswers,likeAnswer,unlikeAnswer,
+    listDislikingAnswers,dislikeAnswer,undislikeAnswer} = require('../controllers/users');
+const { checkAnswerExist } = require('../controllers/answers');
 const {checkTopicExist} = require('../controllers/topics');
 const { secret } = require('../config');
 const jsonwebtoken = require('jsonwebtoken'); 
@@ -48,5 +53,19 @@ router.get('/getFollowingTopics/:id',listFollowingTopics)
 router.put('/followingTopics/:id',auth,checkTopicExist,followTopic)
 
 router.put('/unfollowingTopics/:id',auth,checkTopicExist,unfollowTopic)
+
+router.get('/getFollowingQuestion/:id',listQuestions)
+
+router.get('/getlistLikingAnswers/:id',listLikingAnswers)
+
+router.put('/likeAnswer/:id',auth,checkAnswerExist,likeAnswer,undislikeAnswer)
+
+router.put('/unlikeAnswer/:id',auth,checkAnswerExist,unlikeAnswer)
+
+router.get('/getlistDislikingAnswers/:id',listDislikingAnswers)
+
+router.put('/dislikeAnswer/:id',auth,checkAnswerExist,dislikeAnswer,unlikeAnswer)
+
+router.put('/undislikeAnswer/:id',auth,checkAnswerExist,undislikeAnswer)
 
 module.exports = router;
